@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
 
 
     @media (max-width: 1180px){
-        background: black;
+        // background: black;
         width: 100%;
     }
 `
@@ -132,6 +132,7 @@ export const RadioBtn = styled.input`
     width: 15px;
     height: 15px;
     accent-color: #fdd000;
+    transform: translateY(-2px);
 `
 
 export const RadioLabel = styled.label`

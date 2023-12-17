@@ -25,9 +25,25 @@ import {
     Error,
     Span
 } from "../../../styles/boardsNew";
-import { useState } from "react";
+import { useState } from 'react'
+import { gql, useMutation } from '@apollo/client'
+import { useRouter } from 'next/router'
+
+const CREATE_BOARD = gql`
+    mutation createBoard($createBoardInput: CreateBoardInput!){
+        createBoard(createBoardInput: $createBoardInput){
+            _id
+        }
+    }
+`
 
 export default function BoardsNewPage(){
+
+    //graphql 추가
+    const [createBoard] = useMutation(CREATE_BOARD)
+    
+    //router 추가
+    const router = useRouter()
 
     //받아오는 value의 값
     const [writer, setWriter] = useState('');
@@ -70,9 +86,8 @@ export default function BoardsNewPage(){
         }
     };
 
-
     //결과값 출력
-    const onClickSubmit = (event) =>{
+    const onClickSubmit = async () =>{
         if(!writer){ //없을때
             setWriterError('작성자 이름을 입력해주세요.');
             //alert('작성자 이름을 확인해 주세요.');
@@ -90,7 +105,22 @@ export default function BoardsNewPage(){
             //alert('내용을 확인해 주세요.')
         }
         if(writer && password && title && content){
-            alert('게시글이 등록되었습니다.');
+            try{
+                const result = await createBoard({
+                    variables: {
+                        createBoardInput:{
+                            writer,
+                            password,
+                            title,
+                            contents: content
+                        }
+                    }
+                })
+                console.log(result.data.createBoard._id);
+                router.push(`/boards/${result.data.createBoard._id}`)
+            } catch(error){
+                alert(error.message)
+            }
         }
     }
 
